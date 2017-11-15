@@ -72,7 +72,7 @@ public class SoundGrapher : MonoBehaviour
 			sound.GetData (samples, 0);
 
 			currentTime = 0;
-			//audioSource.PlayOneShot (sound);
+			audioSource.PlayOneShot (sound);
 		}
 	}
 }
