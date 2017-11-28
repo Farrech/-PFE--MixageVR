@@ -59,7 +59,7 @@ public class FollowSpline : MonoBehaviour
             arcMeshMaterial.color = Color.Lerp(Color.red, Color.yellow, progress);
             MoveAudioSource();
             this.GetComponent<AudioSource>().panStereo = Interpolate(progress);
-            print(progress + " - " + Interpolate(progress));
+            //print(progress + " - " + Interpolate(progress));
         }
         else if (Input.GetKey(KeyCode.RightControl))
         {

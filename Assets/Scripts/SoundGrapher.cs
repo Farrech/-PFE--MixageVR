@@ -8,7 +8,9 @@ public class SoundGrapher : MonoBehaviour
 
 	[Range(0.1f, 4f)]
 	public float factor = 1;
-	public AudioClip sound;	
+    [Range(0, 30000)]
+    public int nbParticles = 30000;
+    public AudioClip sound;	
 
 
 
@@ -46,16 +48,16 @@ public class SoundGrapher : MonoBehaviour
 	// Custom Methods
 
 	void CreatePoints () {
-		ParticleSystem.Particle[] points = new ParticleSystem.Particle[frameLength * sound.frequency];
+		ParticleSystem.Particle[] points = new ParticleSystem.Particle[nbParticles];
 
-		float increment = 1f / (points.Length - 1) * frameLength;
+		float increment = 1f / (points.Length - 1);
 		int sampleOffset = Mathf.RoundToInt(sound.frequency * currentTime);
 		int sampleIndex = 0;
 		for (int i = 0; i < points.Length; i++) {
 			float x = i * increment;
-			sampleIndex = i - (frameLength * sound.frequency / 2) + sampleOffset;
-			float y = (sampleIndex < 0 || sampleIndex > samples.Length / 2) ? 0 : samples[sampleIndex] * factor;
-			points [i].position = new Vector3 (x, y, 0f);
+			sampleIndex = (i * (frameLength * sound.frequency) / nbParticles) + sampleOffset - sound.frequency;
+            float y = (sampleIndex < 0 || sampleIndex > samples.Length / 2) ? 0 : samples[sampleIndex] * factor;
+            points [i].position = new Vector3 (x, y, 0f);
 			points [i].startColor = new Color (x, y, 0f);
 			points [i].startSize = 0.01f;
 		}
