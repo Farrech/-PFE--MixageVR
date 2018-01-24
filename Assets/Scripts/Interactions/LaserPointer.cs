@@ -37,7 +37,7 @@ public class LaserPointer : MonoBehaviour {
     void Update()
     {
         // controller is targetting an object through the laser
-        if (Controller.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
+        if (Controller.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && ! Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
             if (Physics.Raycast(trackedObj.transform.position, transform.forward, out hit, 100, teleportMask))
             {

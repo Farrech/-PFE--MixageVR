@@ -17,15 +17,15 @@ public class MoveTarget : MonoBehaviour {
     private Material arcMeshMaterial;
 
 
-    public void OnEnable()
-    {
-        RightControllerManager.OnTriggerTouchAction += MoveTargetAction;
-    }
+    //public void OnEnable()
+    //{
+    //    RightControllerManager.OnTriggerTouchAction += MoveTargetAction;
+    //}
 
-    public void OnDisable()
-    {
-        RightControllerManager.OnTriggerTouchAction -= MoveTargetAction;
-    }
+    //public void OnDisable()
+    //{
+    //    RightControllerManager.OnTriggerTouchAction -= MoveTargetAction;
+    //}
 
     public void Start()
     {
