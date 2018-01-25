@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InteractivePipe : MonoBehaviour {
 
@@ -13,18 +14,21 @@ public class InteractivePipe : MonoBehaviour {
     public Pipe pipe;
     Mesh mesh;
     public bool visible;
-
+    public GameObject textInfoGo;
 
     public void OnEnable()
     {
         RightControllerManager.OnTouchpadPressAction += MoveTargetAction;
         RightControllerManager.OnTriggerPressAction += SelectTarget;
+        LeftControllerTelepotation.OnTeleportation += UpdateText;
     }
 
     public void OnDisable()
     {
         RightControllerManager.OnTouchpadPressAction -= MoveTargetAction;
         RightControllerManager.OnTriggerPressAction -= SelectTarget;
+        LeftControllerTelepotation.OnTeleportation -= UpdateText;
+
     }
 
     void Awake()
@@ -32,6 +36,7 @@ public class InteractivePipe : MonoBehaviour {
         bezierSpline = this.GetComponent<BezierSpline>();
         bezierSpline.Loop = false;
         mesh = GetComponent<MeshFilter>().mesh;
+
       }
 
     private void Update()
@@ -206,6 +211,9 @@ public class InteractivePipe : MonoBehaviour {
 
         if (move)
             MoveAudioSource();
+
+        UpdateText();
+
     }
 
 
@@ -222,9 +230,17 @@ public class InteractivePipe : MonoBehaviour {
             progress = 1f;
         }
         audioGo.transform.localPosition = calculatePosition;
-        audioGo.transform.LookAt(calculatePosition + bezierSpline.GetDirection(progress));
+        audioGo.transform.LookAt(Vector3.zero);
+        //textInfoGo.transform.localRotation = Quaternion.Euler(textInfoGo.transform.localRotation.x, textInfoGo.transform.localRotation.y - 180f, textInfoGo.transform.localRotation.z);
+        //textInfoGo.transform.eulerAngles = new Vector3(textInfoGo.transform.rotation.x, textInfoGo.transform.rotation.y - 180f, textInfoGo.transform.rotation.z);
     }
 
+    private void UpdateText()
+    {
+        textInfoGo.transform.position = new Vector3(audioGo.transform.position.x, 2, audioGo.transform.position.z);
+        textInfoGo.transform.LookAt(Camera.main.transform);
+        textInfoGo.transform.Rotate(0, -180, 0);
+    }
 
     private float Interpolate(float f)
     {

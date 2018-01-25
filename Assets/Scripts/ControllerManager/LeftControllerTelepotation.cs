@@ -25,6 +25,8 @@ public class LeftControllerTelepotation : MonoBehaviour
     private bool shouldTeleport;
     private bool up;
 
+    public delegate void TeleportAction();
+    public static event TeleportAction OnTeleportation;
 
     private SteamVR_Controller.Device Controller
     {
@@ -63,7 +65,7 @@ public class LeftControllerTelepotation : MonoBehaviour
                 this.hitGo = hit.collider.gameObject;
                 hitPoint = hit.point; // Nécessaire?
                 ShowLaser(hit);
-                if (hitGo.tag != "AudioSource")
+                if (hitGo.tag != "AudioSource" && hitGo.name=="Floor")
                 {
                     reticle.SetActive(true);
                     teleportReticleTransform.position = hitPoint + teleportReticleOffset;
@@ -85,6 +87,10 @@ public class LeftControllerTelepotation : MonoBehaviour
         if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
         {
             up = !up;
+            if (up)
+                cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y+5, cameraRigTransform.position.z);
+            else
+                cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y - 5, cameraRigTransform.position.z);
         }
     }
 
@@ -96,6 +102,7 @@ public class LeftControllerTelepotation : MonoBehaviour
         difference.y = 0;
         cameraRigTransform.position = hitPoint + difference;
         if(up)
-        cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, 5, cameraRigTransform.position.z);
+            cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y + 5, cameraRigTransform.position.z);
+        OnTeleportation();
     }
 }
