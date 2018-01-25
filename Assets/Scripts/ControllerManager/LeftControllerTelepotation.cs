@@ -71,6 +71,10 @@ public class LeftControllerTelepotation : MonoBehaviour
                     teleportReticleTransform.position = hitPoint + teleportReticleOffset;
                     shouldTeleport = true;
                 }
+                else
+                {
+                    reticle.SetActive(false);
+                }
 
             }
         }
@@ -91,6 +95,8 @@ public class LeftControllerTelepotation : MonoBehaviour
                 cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y+5, cameraRigTransform.position.z);
             else
                 cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y - 5, cameraRigTransform.position.z);
+            OnTeleportation();
+
         }
     }
 

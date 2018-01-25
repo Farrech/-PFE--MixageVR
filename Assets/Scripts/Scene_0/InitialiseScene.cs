@@ -11,9 +11,9 @@ public class InitialiseScene : MonoBehaviour {
     public GameObject bezierSplinePrefab;
     public GameObject pipePrefab;
     public Transform audioSourcesContainer, bezierSplinescontainer, pipesContainer;
-    public int DIMENSION; // à changer
     public Transform canvasInfo;
     public GameObject textInfoPrefab;
+    public Transform frontWall;
 
 
     private void Awake()
@@ -38,6 +38,7 @@ public class InitialiseScene : MonoBehaviour {
             var bezierGo = Instantiate(bezierSplinePrefab,bezierSplinescontainer);
             //bezierGo.transform.localPosition = new Vector3(0, 0.5f, 0);
             bezierGo.GetComponent<InteractivePipe>().audioGo = audioGo;
+            bezierGo.GetComponent<InteractivePipe>().frontWall = frontWall;
             bezierGo.GetComponent<InteractivePipe>().textInfoGo = textInfo;
             bezierGo.GetComponent<InteractivePipe>().currentRadius = 15; // En dur à changer
             bezierGo.GetComponent<InteractivePipe>().pipe = pipeGo.GetComponent<Pipe>();

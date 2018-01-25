@@ -15,6 +15,7 @@ public class InteractivePipe : MonoBehaviour {
     Mesh mesh;
     public bool visible;
     public GameObject textInfoGo;
+    public Transform frontWall; 
 
     public void OnEnable()
     {
@@ -28,7 +29,6 @@ public class InteractivePipe : MonoBehaviour {
         RightControllerManager.OnTouchpadPressAction -= MoveTargetAction;
         RightControllerManager.OnTriggerPressAction -= SelectTarget;
         LeftControllerTelepotation.OnTeleportation -= UpdateText;
-
     }
 
     void Awake()
@@ -102,7 +102,7 @@ public class InteractivePipe : MonoBehaviour {
         {
             if (hitGo.GetComponent<AudioSourceSript>().anchored)
             {
-                if (direction == Vector3.up)
+                if (direction == Vector3.up && audioGo.transform.position.z < frontWall.transform.position.z- 0.5f)
                 {
                     currentRadius += 1f * Time.deltaTime;
                 }
@@ -110,19 +110,26 @@ public class InteractivePipe : MonoBehaviour {
                 {
                     currentRadius -= 1f * Time.deltaTime;
                 }
-                else if (direction == Vector3.right)
+                else if (direction == Vector3.right && audioGo.transform.position.z < frontWall.transform.position.z-0.5f)
                 {
                     progress += 1f * Time.deltaTime;
                 }
-                else if (direction == Vector3.left)
+                else if (direction == Vector3.left && audioGo.transform.position.z < frontWall.transform.position.z-0.5f)
                 {
                     progress -= 1f * Time.deltaTime;
+                } 
+                else if (audioGo.transform.position.z >= frontWall.transform.position.z - 0.5f )
+                {
+                    audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x, audioGo.transform.position.y, audioGo.transform.position.z - 1f * Time.deltaTime);
+                    currentRadius = Mathf.Sqrt(audioGo.transform.localPosition.x * audioGo.transform.localPosition.x + audioGo.transform.localPosition.z * audioGo.transform.localPosition.z);
+                    CalculNewProgress();
                 }
+
                 UpdateCurve(true);
             }
             else if (!hitGo.GetComponent<AudioSourceSript>().anchored)
             {
-                if (direction == Vector3.up)
+                if (direction == Vector3.up && audioGo.transform.position.z < frontWall.transform.position.z - 0.5f)
                 {
                     audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x, audioGo.transform.position.y, audioGo.transform.position.z + 1f * Time.deltaTime);
                 }
@@ -130,11 +137,11 @@ public class InteractivePipe : MonoBehaviour {
                 {
                     audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x, audioGo.transform.position.y, audioGo.transform.position.z - 1f * Time.deltaTime);
                 }
-                else if (direction == Vector3.right)
+                else if (direction == Vector3.right && audioGo.transform.position.x < frontWall.transform.position.z *2  - 0.5f)
                 {
                     audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x + 1f * Time.deltaTime, audioGo.transform.position.y, audioGo.transform.position.z);
                 }
-                else if (direction == Vector3.left)
+                else if (direction == Vector3.left && audioGo.transform.position.x > -frontWall.transform.position.z * 2 + 0.5f)
                 {
                     audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x - 1f * Time.deltaTime, audioGo.transform.position.y, audioGo.transform.position.z);
                 }

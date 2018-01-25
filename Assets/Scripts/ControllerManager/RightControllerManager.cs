@@ -30,7 +30,7 @@ public class RightControllerManager : MonoBehaviour
     }
 
     //todo = virer toute logique d'ici
-    private void Update()
+    private void FixedUpdate()
     {
         if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
         {
@@ -40,23 +40,23 @@ public class RightControllerManager : MonoBehaviour
                 if (localHitGo == null)
                 {
                     localHitGo = hitGo;
-                    localHitGo.GetComponent<Renderer>().material.color = Color.red;
+                    localHitGo.GetComponent<Renderer>().material.color = Color.gray;
                     if (!showAll)
                         OnTriggerPressAction(localHitGo);
                 }
                 else if( localHitGo!=null && hitGo.GetComponent<AudioSourceSript>().index== localHitGo.GetComponent<AudioSourceSript>().index)
                 {
-                    localHitGo.GetComponent<Renderer>().material.color = Color.black;
+                    localHitGo.GetComponent<Renderer>().material.color = Color.white;
                     if (!showAll)
                         OnTriggerPressAction(localHitGo);
                     localHitGo = null;
                 }else if (localHitGo != null && hitGo.GetComponent<AudioSourceSript>().index != localHitGo.GetComponent<AudioSourceSript>().index)
                 {
-                    localHitGo.GetComponent<Renderer>().material.color = Color.black;
+                    localHitGo.GetComponent<Renderer>().material.color = Color.white;
                     if (!showAll)
                         OnTriggerPressAction(localHitGo);
                     localHitGo = hitGo;
-                    localHitGo.GetComponent<Renderer>().material.color = Color.red;
+                    localHitGo.GetComponent<Renderer>().material.color = Color.gray;
                     if (!showAll)
                         OnTriggerPressAction(localHitGo);
                 }
@@ -119,6 +119,19 @@ public class RightControllerManager : MonoBehaviour
                 if (this.localHitGo != null && this.localHitGo.GetComponent<AudioSourceSript>().index == t.GetComponent<InteractivePipe>().audioGo.GetComponent<AudioSourceSript>().index)
                     t.GetComponent<InteractivePipe>().visible = true;
                 t.GetComponent<InteractivePipe>().UpdateCurve(false);
+            }
+        }
+    }
+
+    public void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("AudioSource"))
+        {
+            if (Controller.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
+            {
+                float volumeControl = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0).y + 1) / 2;
+                other.transform.GetChild(0).GetChild(0).localScale = new Vector3(1.05f, volumeControl, 1.05f);
+                other.GetComponent<AudioSource>().volume = volumeControl;
             }
         }
     }

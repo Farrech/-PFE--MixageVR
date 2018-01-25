@@ -141,3 +141,4 @@ MonoBehaviour:
   pipe: {fileID: 0}
   visible: 0
   textInfoGo: {fileID: 0}
+  frontWall: {fileID: 0}
