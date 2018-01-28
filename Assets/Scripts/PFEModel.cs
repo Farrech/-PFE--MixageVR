@@ -8,5 +8,6 @@ public class PFEModel : PFEElement {
     public AudioMixer mixer;
     public List<int> listeningSources = new List<int>();
     public List<int> modifyingSources = new List<int>();
-    public int maxDuration = 60 * 6; // 6 minutes at large
+    public float maxDuration = 0;
+    public List<GameObject> walls = new List<GameObject>();
 }

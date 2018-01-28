@@ -60,7 +60,7 @@ public class LeftControllerTelepotation : MonoBehaviour
 
     void Update()
     {
-        if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
+        if (Controller.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
         {
             RaycastHit hit;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,14 +10,17 @@ public class MenuView : PFEElement
     public Slider mixSlider;
     public GameObject soundPanelPrefab;
     public GameObject mixPanelPrefab;
+    public GameObject textureButtonPrefab;
+    public Transform texturePanel;
     public Transform soundPanel;
     public Transform mixPanel;
     public Transform head;
+    public ResonanceAudioRoom rar;
+    public bool menuState;
 
     List<Toggle> toggles = new List<Toggle>();
     float currentTime = 0;
     bool isPlaying = false;
-    public bool menuState = false;
     
     void Update()
     {
@@ -34,7 +38,7 @@ public class MenuView : PFEElement
         gameObject.SetActive(menuState);
         if(menuState)
         {
-            transform.position = head.position + head.forward * 3;
+            transform.position = head.position + head.forward * 5;
             if (transform.position.y < 2)
                 transform.position = new Vector3(transform.position.x, 2, transform.position.z);
             transform.LookAt(head);
@@ -65,6 +69,43 @@ public class MenuView : PFEElement
         }
     }
 
+    public void DisplayTextures()
+    {
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites");
+        GameObject newPanel;
+
+        foreach (Sprite sprite in sprites)
+        {
+            newPanel = Instantiate(textureButtonPrefab, texturePanel);
+            newPanel.name = sprite.name;
+            newPanel.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+            newPanel.GetComponentInChildren<Text>().text = sprite.name;
+            Button button = newPanel.GetComponent<Button>();
+            button.interactable = !(sprite.name == rar.leftWall.ToString());
+            button.onClick.AddListener(delegate { OnTextureButtonClick(sprite.name); });
+        }
+    }
+
+    public void OnTextureButtonClick(string textureName)
+    {
+        foreach(Transform child in texturePanel)
+        {
+            Button button = child.GetComponent<Button>();
+            button.interactable = !(button.name == textureName);
+        }
+
+        ResonanceAudioRoomManager.SurfaceMaterial surface = (ResonanceAudioRoomManager.SurfaceMaterial)Enum.Parse(typeof(ResonanceAudioRoomManager.SurfaceMaterial), textureName);
+        rar.leftWall = surface;
+        rar.rightWall = surface;
+        rar.frontWall = surface;
+        rar.backWall = surface;
+
+        foreach (GameObject wall in app.model.walls)
+        {
+            wall.GetComponent<Renderer>().material = Resources.Load<Material>("Materials/" + textureName);
+        }
+    }
+
     public void OnModifyChange(int soundIndex)
     {
         if (app.model.modifyingSources.Contains(soundIndex))
@@ -90,7 +131,7 @@ public class MenuView : PFEElement
             foreach (int index in app.model.listeningSources)
             {
                 AudioSource source = app.model.transform.GetChild(index).GetComponent<AudioSource>();
-                source.time = currentTime;
+                source.time = (currentTime <= source.clip.length ? currentTime : source.clip.length);
                 source.Play();
             }
         }

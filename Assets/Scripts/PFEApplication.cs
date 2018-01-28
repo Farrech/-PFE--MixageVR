@@ -26,7 +26,7 @@ public class PFEApplication : MonoBehaviour
     public GameObject audioPrefab;
     public GameObject bezierSplinePrefab;
     public GameObject pipePrefab;
-    public Transform audioSourcesContainer, bezierSplinescontainer, pipesContainer;
+    public Transform bezierSplinescontainer, pipesContainer;
     public Transform canvasInfo;
     public GameObject textInfoPrefab;
     public Transform frontWall;
@@ -47,9 +47,11 @@ public class PFEApplication : MonoBehaviour
                 source = audioGo.GetComponent<AudioSource>();
                 source.clip = (AudioClip)clips[i];
                 source.name = source.clip.name;
+                if (source.clip.length > model.maxDuration)
+                    model.maxDuration = source.clip.length;
                 audioGo.GetComponent<AudioSourceSript>().index = i;
                 var textInfo = Instantiate(textInfoPrefab, canvasInfo);
-                textInfo.GetComponent<Text>().text = clips[i].name;
+                textInfo.GetComponentInChildren<Text>().text = clips[i].name;
                 var pipeGo = Instantiate(pipePrefab, pipesContainer);
                 var bezierGo = Instantiate(bezierSplinePrefab, bezierSplinescontainer);
                 var interactivePipe = bezierGo.GetComponent<InteractivePipe>();
@@ -64,6 +66,7 @@ public class PFEApplication : MonoBehaviour
                 bezierSplineL.Add(bezierGo.GetComponent<InteractiveBezier>());
             }
         }
+        view.menu.DisplayTextures();
         view.menu.DisplaySongs();
         view.menu.PlayPause();
         view.menu.SwitchMenuState();

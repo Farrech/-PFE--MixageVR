@@ -45,58 +45,8 @@ public class InteractivePipe : MonoBehaviour {
 
     private void Update()
     {
-        //if (Input.GetKey(KeyCode.DownArrow))
-        //{
-        //    Debug.Log("down");
-        //    currentRadius -= 1f * Time.deltaTime;
-        //    UpdateBezierSpline(true);
-        //}
-        //else if (Input.GetKey(KeyCode.UpArrow))
-        //{
-        //    Debug.Log("up");
-        //    currentRadius += 1f * Time.deltaTime;
-        //    UpdateBezierSpline(true);
-        //}
-        //else if (Input.GetKey(KeyCode.RightArrow))
-        //{
-        //    progress += 1f * Time.deltaTime;
-        //    UpdateBezierSpline(true);
-        //}
-        //else if (Input.GetKey(KeyCode.LeftArrow))
-        //{
-        //    progress -= 1f * Time.deltaTime;
-        //    UpdateBezierSpline(true);
-        //}
-        //else if (Input.GetKey(KeyCode.Z))
-        //{
-        //    audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x, audioGo.transform.position.y, audioGo.transform.position.z + 1f * Time.deltaTime);
-        //    currentRadius = Mathf.Sqrt(audioGo.transform.localPosition.x * audioGo.transform.localPosition.x + audioGo.transform.localPosition.z * audioGo.transform.localPosition.z);
-        //    progress = CalculNewProgress();
-        //    UpdateBezierSpline(false);
-        //}
-        //else if (Input.GetKey(KeyCode.S))
-        //{
-        //    audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x, audioGo.transform.position.y, audioGo.transform.position.z - 1f * Time.deltaTime);
-        //    currentRadius = Mathf.Sqrt(audioGo.transform.localPosition.x * audioGo.transform.localPosition.x + audioGo.transform.localPosition.z * audioGo.transform.localPosition.z);
-        //    progress = CalculNewProgress();
-        //    UpdateBezierSpline(false);
-        //}
-        //else if (Input.GetKey(KeyCode.Q))
-        //{
-        //    audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x - 1f * Time.deltaTime, audioGo.transform.position.y, audioGo.transform.position.z);
-        //    currentRadius = Mathf.Sqrt(audioGo.transform.localPosition.x * audioGo.transform.localPosition.x + audioGo.transform.localPosition.z * audioGo.transform.localPosition.z);
-        //    progress = CalculNewProgress();
-        //    UpdateBezierSpline(false);
-        //}
-        //else if (Input.GetKey(KeyCode.D))
-        //{
-        //    audioGo.transform.localPosition = new Vector3(audioGo.transform.position.x + 1f * Time.deltaTime, audioGo.transform.position.y, audioGo.transform.position.z);
-        //    currentRadius = Mathf.Sqrt(audioGo.transform.localPosition.x * audioGo.transform.localPosition.x + audioGo.transform.localPosition.z * audioGo.transform.localPosition.z);
-        //    progress = CalculNewProgress();
-        //    UpdateBezierSpline(false);
-        //}
-
-
+        if(Camera.main)
+            UpdateText();
     }
 
     // TODO : limité les actions dans les dimensions de la salle
@@ -106,7 +56,9 @@ public class InteractivePipe : MonoBehaviour {
         {
             if (hitGo.GetComponent<AudioSourceSript>().anchored)
             {
-                if (direction == Vector3.up && audioGo.transform.position.z < frontWall.transform.position.z- 0.5f)
+                if (direction == Vector3.up &&  audioGo.transform.position.z < frontWall.transform.position.z - 0.5f 
+                    && audioGo.transform.position.x < frontWall.transform.position.z - 0.5f 
+                    && audioGo.transform.position.x > -frontWall.transform.position.z + 0.5f)
                 {
                     currentRadius += 2f * Time.deltaTime;
                 }
@@ -114,11 +66,13 @@ public class InteractivePipe : MonoBehaviour {
                 {
                     currentRadius -= 2f * Time.deltaTime;
                 }
-                else if (direction == Vector3.right && audioGo.transform.position.z < frontWall.transform.position.z-0.5f)
+                else if (direction == Vector3.right && audioGo.transform.position.z < frontWall.transform.position.z-0.5f
+                    && audioGo.transform.position.x < frontWall.transform.position.z - 0.5f)
                 {
                     progress += 0.5f * Time.deltaTime;
                 }
-                else if (direction == Vector3.left && audioGo.transform.position.z < frontWall.transform.position.z-0.5f)
+                else if (direction == Vector3.left && audioGo.transform.position.z < frontWall.transform.position.z-0.5f
+                    && audioGo.transform.position.x > -frontWall.transform.position.z + 0.5f)
                 {
                     progress -= 0.5f * Time.deltaTime;
                 } 
@@ -227,14 +181,11 @@ public class InteractivePipe : MonoBehaviour {
         bezierSpline.Reset();
         SetBezierSpline();
         pipe.curveRadius = currentRadius;
-        Debug.Log("update, visible = " + visible);
         pipe.UpdatePipe(visible);
         pipe.pipeMaterial.color = Color.Lerp(Color.red, Color.yellow, progress);
 
         if (move)
             MoveAudioSource();
-
-        UpdateText();
 
     }
 
@@ -261,8 +212,8 @@ public class InteractivePipe : MonoBehaviour {
     {
         textInfoGo.transform.position = new Vector3(audioGo.transform.position.x, 2, audioGo.transform.position.z);
         
-        //textInfoGo.transform.LookAt(GameObject.Find("VRTKSDK/SteamSDK/Camera(eye)").transform);
-        //textInfoGo.transform.Rotate(0, -180, 0);
+        textInfoGo.transform.LookAt(Camera.main.transform);
+        textInfoGo.transform.Rotate(0, -180, 0);
     }
 
     private float Interpolate(float f)

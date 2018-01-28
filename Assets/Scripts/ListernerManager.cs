@@ -7,6 +7,7 @@ public class ListernerManager : MonoBehaviour {
     public GameObject ears;
     public Transform head;
     public Transform listenerGo;
+    private GameObject listGo;
 
     private void OnEnable()
     {
@@ -21,14 +22,26 @@ public class ListernerManager : MonoBehaviour {
         RightControllerManager.OnTouchPadAndTriggerPress -= ChangeListenerOrientation;
     }
 
+    private void Awake()
+    {
+        listGo = this.transform.GetChild(0).gameObject;
+        listGo.SetActive(false);
+    }
 
     void ChangeListener()
     {
         if (ears.transform.parent == listenerGo)
+        {
             ears.transform.parent = head;
+            listGo.SetActive(false);
+        }
         else
+        {
             ears.transform.parent = listenerGo;
+            listGo.SetActive(true);
+        }
         ears.transform.localPosition = Vector3.zero;
+
         ears.transform.rotation = ears.transform.parent.transform.rotation;
     }
 

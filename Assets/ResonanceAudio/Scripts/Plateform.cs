@@ -15,7 +15,6 @@ public class Plateform : MonoBehaviour {
         if (this.isActiveAndEnabled)
         {
             this.transform.eulerAngles = Vector3.zero;
-            //var offset = 5-this.transform.parent.transform.parent.transform.position.y;
             this.transform.position = new Vector3(eye.transform.position.x, 5, eye.transform.position.z);
         }
     }
