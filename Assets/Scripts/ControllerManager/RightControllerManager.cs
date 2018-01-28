@@ -11,11 +11,20 @@ public class RightControllerManager : MonoBehaviour
     public delegate void TouchpadPressAction2(bool up);
     public static event TouchpadPressAction2 OnTouchpadPressAction2;
 
-    public delegate void TriggerPressAction(GameObject hitGo); // show 
+    public delegate void TriggerPressAction(GameObject hitGo); 
     public static event TriggerPressAction OnTriggerPressAction;
 
+    public delegate void GripPressAction(GameObject hitGo);
+    public static event GripPressAction OnGripPressAction;
 
-    private GameObject localHitGo;
+    public delegate void TouchPadAndTriggerPress(bool dir);
+    public static event TouchPadAndTriggerPress OnTouchPadAndTriggerPress;
+
+    public GameObject menuViewGo;
+    private MenuView menuView;
+
+
+    private GameObject lastHitGo;
     public Transform bezierSplinesContainer;
     bool showAll;
     private SteamVR_TrackedObject trackedObj;
@@ -26,70 +35,118 @@ public class RightControllerManager : MonoBehaviour
 
     void Awake()
     {
+        menuView = menuViewGo.GetComponent<PFEView>().menu;
         trackedObj = GetComponent<SteamVR_TrackedObject>();
     }
 
     //todo = virer toute logique d'ici
-    private void FixedUpdate()
+    private void Update()
     {
+        if(!menuView.menuState)
         if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
         {
-            var hitGo = this.GetComponentInParent<LaserPointer>().hitGo;
-            if (hitGo && hitGo.tag == "AudioSource")
-            {
-                if (localHitGo == null)
+                if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && lastHitGo.tag == "AudioListener")
                 {
-                    localHitGo = hitGo;
-                    localHitGo.GetComponent<Renderer>().material.color = Color.gray;
-                    if (!showAll)
-                        OnTriggerPressAction(localHitGo);
+                    var touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
+                        if (touchpad.x > 0.2f)
+                        {
+                        OnTouchPadAndTriggerPress(true);
+                        }
+                        else if (touchpad.x < -0.2f)
+                        {
+                        OnTouchPadAndTriggerPress(false);
+                        }
                 }
-                else if( localHitGo!=null && hitGo.GetComponent<AudioSourceSript>().index== localHitGo.GetComponent<AudioSourceSript>().index)
+                else
                 {
-                    localHitGo.GetComponent<Renderer>().material.color = Color.white;
-                    if (!showAll)
-                        OnTriggerPressAction(localHitGo);
-                    localHitGo = null;
-                }else if (localHitGo != null && hitGo.GetComponent<AudioSourceSript>().index != localHitGo.GetComponent<AudioSourceSript>().index)
-                {
-                    localHitGo.GetComponent<Renderer>().material.color = Color.white;
-                    if (!showAll)
-                        OnTriggerPressAction(localHitGo);
-                    localHitGo = hitGo;
-                    localHitGo.GetComponent<Renderer>().material.color = Color.gray;
-                    if (!showAll)
-                        OnTriggerPressAction(localHitGo);
-                }
+                    var hitGo = this.GetComponentInParent<LaserPointer>().hitGo;
+                    if (hitGo && hitGo.tag == "AudioSource")
+                    {
 
-            }
+                        if (lastHitGo == null)
+                        {
+                            lastHitGo = hitGo;
+                            lastHitGo.GetComponent<Renderer>().material.color = Color.gray;
+                            if (!showAll)
+                                OnTriggerPressAction(lastHitGo);
+                        }
+                        else if (lastHitGo != null && lastHitGo.tag != "AudioListener" && hitGo.GetComponent<AudioSourceSript>().index == lastHitGo.GetComponent<AudioSourceSript>().index)
+                        {
+                            lastHitGo.GetComponent<Renderer>().material.color = Color.white;
+                            if (!showAll)
+                                OnTriggerPressAction(lastHitGo);
+                            lastHitGo = null;
+                        }
+                        else if (lastHitGo != null && lastHitGo.tag != "AudioListener" && hitGo.GetComponent<AudioSourceSript>().index != lastHitGo.GetComponent<AudioSourceSript>().index)
+                        {
+                            lastHitGo.GetComponent<Renderer>().material.color = Color.white;
+                            if (!showAll)
+                                OnTriggerPressAction(lastHitGo);
+                            lastHitGo = hitGo;
+                            lastHitGo.GetComponent<Renderer>().material.color = Color.gray;
+                            if (!showAll)
+                                OnTriggerPressAction(lastHitGo);
+                        }
+                        else if (lastHitGo != null && lastHitGo.tag == "AudioListener")
+                        {
+                            lastHitGo.GetComponent<Renderer>().material.color = Color.white;
+                            lastHitGo = hitGo;
+                            lastHitGo.GetComponent<Renderer>().material.color = Color.gray;
+                            if (!showAll)
+                                OnTriggerPressAction(lastHitGo);
+                        }
+                    }
+                    else if (hitGo && hitGo.tag == "AudioListener" && lastHitGo == null)
+                    {
+                        lastHitGo = hitGo;
+                        lastHitGo.GetComponent<Renderer>().material.color = Color.green;
+                    }
+                    else if (hitGo && hitGo.tag == "AudioListener" && lastHitGo.tag == "AudioSource")
+                    {
+                        lastHitGo.GetComponent<Renderer>().material.color = Color.white;
+                        if (!showAll)
+                            OnTriggerPressAction(lastHitGo);
+                        lastHitGo = hitGo;
+                        lastHitGo.GetComponent<Renderer>().material.color = Color.green;
+                    }
+                    else if (hitGo && hitGo.tag == "AudioListener" && hitGo == lastHitGo)
+                    {
+                        lastHitGo.GetComponent<Renderer>().material.color = Color.white;
+                        lastHitGo = null;
+                    }
+                }
         }
         else if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            if (localHitGo && OnTouchpadPressAction != null)
+            if (lastHitGo && OnTouchpadPressAction != null)
             {
-                var offSetTouchPad = localHitGo.GetComponent<AudioSourceSript>().anchored ? 0.7f : 0.2f;
-                Vector2 touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
+                var offSetTouchPad = 0.0;
+                if (lastHitGo.tag == "AudioSource")
+                    offSetTouchPad = lastHitGo.GetComponent<AudioSourceSript>().anchored ? 0.7f : 0.2f;
+                else
+                    offSetTouchPad = 0.2f;
+                var touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
                 if (touchpad.y > offSetTouchPad)
                 {
-                    OnTouchpadPressAction(localHitGo, Vector3.up);
+                    OnTouchpadPressAction(lastHitGo, Vector3.up);
                 }
                 else if (touchpad.y < -offSetTouchPad)
                 {
-                    OnTouchpadPressAction(localHitGo, Vector3.down);
+                    OnTouchpadPressAction(lastHitGo, Vector3.down);
                 }
                 if (touchpad.x > offSetTouchPad)
                 {
-                    OnTouchpadPressAction(localHitGo, Vector3.right);
+                    OnTouchpadPressAction(lastHitGo, Vector3.right);
                 }
                 else if (touchpad.x < -offSetTouchPad)
                 {
-                    OnTouchpadPressAction(localHitGo, Vector3.left);
+                    OnTouchpadPressAction(lastHitGo, Vector3.left);
                 }
             }
             else
             {
-                Vector2 touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
-                if (localHitGo== null && OnTouchpadPressAction != null)
+                var touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
+                if (lastHitGo== null && OnTouchpadPressAction != null)
                 {
                     if (touchpad.y > 0.7f)
                     {
@@ -105,9 +162,11 @@ public class RightControllerManager : MonoBehaviour
         }
         else if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
         {
-            if (localHitGo)
+            if (lastHitGo && OnGripPressAction!=null)
             {
-                localHitGo.GetComponent<AudioSourceSript>().anchored = !localHitGo.GetComponent<AudioSourceSript>().anchored;
+                lastHitGo.GetComponent<AudioSourceSript>().anchored = !lastHitGo.GetComponent<AudioSourceSript>().anchored;
+                if(!showAll)
+                OnGripPressAction(lastHitGo);
             }
         }
         else if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
@@ -116,7 +175,7 @@ public class RightControllerManager : MonoBehaviour
             foreach(Transform t in bezierSplinesContainer)
             {
                 t.GetComponent<InteractivePipe>().visible = showAll ? true : false;
-                if (this.localHitGo != null && this.localHitGo.GetComponent<AudioSourceSript>().index == t.GetComponent<InteractivePipe>().audioGo.GetComponent<AudioSourceSript>().index)
+                if (this.lastHitGo != null && this.lastHitGo.GetComponent<AudioSourceSript>().index == t.GetComponent<InteractivePipe>().audioGo.GetComponent<AudioSourceSript>().index && lastHitGo.GetComponent<AudioSourceSript>().anchored)
                     t.GetComponent<InteractivePipe>().visible = true;
                 t.GetComponent<InteractivePipe>().UpdateCurve(false);
             }

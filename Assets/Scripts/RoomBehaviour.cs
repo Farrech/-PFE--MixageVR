@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RoomBehaviour : MonoBehaviour {
 
@@ -10,6 +8,7 @@ public class RoomBehaviour : MonoBehaviour {
     private Transform frontWall;
     private Transform backWall;
     public Transform pipeContainer;
+    private ResonanceAudioRoom audioRoom;
 
     public void OnEnable()
     {
@@ -22,7 +21,9 @@ public class RoomBehaviour : MonoBehaviour {
     }
     void Start()
     {
+
         room = this.transform;
+        audioRoom = this.GetComponentInChildren<ResonanceAudioRoom>();
         rightWall = room.Find("RightWall");
         leftWall = room.Find("LeftWall");
         frontWall = room.Find("FrontWall");
@@ -37,9 +38,12 @@ public class RoomBehaviour : MonoBehaviour {
         {
             limit = t.GetComponent<Pipe>().curveRadius + 1 > limit ? t.GetComponent<Pipe>().curveRadius + 1 : limit;
         }
-        frontWall.transform.position = new Vector3(frontWall.transform.position.x, frontWall.transform.position.y, limit);
-        leftWall.transform.position = new Vector3(-limit*2, frontWall.transform.position.y, frontWall.transform.position.z);
-        rightWall.transform.position = new Vector3(limit * 2, frontWall.transform.position.y, frontWall.transform.position.z);
+        frontWall.transform.position = new Vector3(0, 0, limit);
+        leftWall.transform.position = new Vector3(-limit, 0, 0);
+        rightWall.transform.position = new Vector3(limit, 0, 0);
+        audioRoom.size.x = rightWall.transform.position.x * 2;
+        audioRoom.size.z = frontWall.transform.position.z;
+        audioRoom.transform.position = new Vector3(0, 5f, audioRoom.size.z / 2f);
     }
 
     void MoveWall(bool up)
@@ -62,7 +66,9 @@ public class RoomBehaviour : MonoBehaviour {
             leftWall.position += Vector3.right / 10;
             frontWall.position += Vector3.back / 10;
         }
-
+        audioRoom.size.x = rightWall.transform.position.x * 2;
+        audioRoom.size.z = frontWall.transform.position.z;
+        audioRoom.transform.position = new Vector3(0, 5f, audioRoom.size.z / 2f);
 
     }
 }

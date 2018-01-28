@@ -12,7 +12,7 @@ public class LeftControllerTelepotation : MonoBehaviour
     private Transform laserTransform;
     private Vector3 hitPoint;
     public GameObject hitGo;
-
+    public GameObject plateform;
 
     public Transform cameraRigTransform;
 
@@ -28,6 +28,9 @@ public class LeftControllerTelepotation : MonoBehaviour
     public delegate void TeleportAction();
     public static event TeleportAction OnTeleportation;
 
+    public delegate void TriggerPressAction(); // show 
+    public static event TriggerPressAction OnTriggerPressAction;
+
     private SteamVR_Controller.Device Controller
     {
         get { return SteamVR_Controller.Input((int)trackedObj.index); }
@@ -39,6 +42,7 @@ public class LeftControllerTelepotation : MonoBehaviour
         laserTransform = laser.transform;
         reticle = Instantiate(teleportReticlePrefab);
         teleportReticleTransform = reticle.transform;
+        plateform.SetActive(false);
     }
     private void ShowLaser(RaycastHit hit)
     {
@@ -56,7 +60,7 @@ public class LeftControllerTelepotation : MonoBehaviour
 
     void Update()
     {
-        if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+        if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
         {
             RaycastHit hit;
 
@@ -74,8 +78,8 @@ public class LeftControllerTelepotation : MonoBehaviour
                 else
                 {
                     reticle.SetActive(false);
+                    shouldTeleport = false;
                 }
-
             }
         }
         else 
@@ -88,13 +92,23 @@ public class LeftControllerTelepotation : MonoBehaviour
         {
             Teleport();
         }
+        if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
+        {
+            OnTriggerPressAction();
+        }
         if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
         {
             up = !up;
             if (up)
-                cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y+5, cameraRigTransform.position.z);
+            {
+                cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y + 5, cameraRigTransform.position.z);
+                plateform.SetActive(true);
+            }
             else
+            {
                 cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y - 5, cameraRigTransform.position.z);
+                plateform.SetActive(false);
+            }
             OnTeleportation();
 
         }

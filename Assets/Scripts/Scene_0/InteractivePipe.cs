@@ -22,13 +22,17 @@ public class InteractivePipe : MonoBehaviour {
         RightControllerManager.OnTouchpadPressAction += MoveTargetAction;
         RightControllerManager.OnTriggerPressAction += SelectTarget;
         LeftControllerTelepotation.OnTeleportation += UpdateText;
+        RightControllerManager.OnGripPressAction += SelectTarget2;
+
     }
 
     public void OnDisable()
     {
         RightControllerManager.OnTouchpadPressAction -= MoveTargetAction;
         RightControllerManager.OnTriggerPressAction -= SelectTarget;
+        RightControllerManager.OnGripPressAction -= SelectTarget2;
         LeftControllerTelepotation.OnTeleportation -= UpdateText;
+
     }
 
     void Awake()
@@ -104,19 +108,19 @@ public class InteractivePipe : MonoBehaviour {
             {
                 if (direction == Vector3.up && audioGo.transform.position.z < frontWall.transform.position.z- 0.5f)
                 {
-                    currentRadius += 1f * Time.deltaTime;
+                    currentRadius += 2f * Time.deltaTime;
                 }
                 else if (direction == Vector3.down && currentRadius >=1)
                 {
-                    currentRadius -= 1f * Time.deltaTime;
+                    currentRadius -= 2f * Time.deltaTime;
                 }
                 else if (direction == Vector3.right && audioGo.transform.position.z < frontWall.transform.position.z-0.5f)
                 {
-                    progress += 1f * Time.deltaTime;
+                    progress += 0.5f * Time.deltaTime;
                 }
                 else if (direction == Vector3.left && audioGo.transform.position.z < frontWall.transform.position.z-0.5f)
                 {
-                    progress -= 1f * Time.deltaTime;
+                    progress -= 0.5f * Time.deltaTime;
                 } 
                 else if (audioGo.transform.position.z >= frontWall.transform.position.z - 0.5f )
                 {
@@ -154,12 +158,23 @@ public class InteractivePipe : MonoBehaviour {
 
     private void SelectTarget(GameObject hitGo)
     {
+        if (hitGo.tag=="AudioSource" && hitGo.GetComponent<AudioSourceSript>().index == audioGo.GetComponent<AudioSourceSript>().index && hitGo.GetComponent<AudioSourceSript>().anchored)
+        {
+            visible = !visible;
+            UpdateCurve(visible);
+        }
+    }
+
+    private void SelectTarget2(GameObject hitGo)
+    {
         if (hitGo.GetComponent<AudioSourceSript>().index == audioGo.GetComponent<AudioSourceSript>().index)
         {
             visible = !visible;
             UpdateCurve(visible);
         }
     }
+
+
 
     private Vector3 CalculTang(Vector3 point, float length)
     {
@@ -245,8 +260,9 @@ public class InteractivePipe : MonoBehaviour {
     private void UpdateText()
     {
         textInfoGo.transform.position = new Vector3(audioGo.transform.position.x, 2, audioGo.transform.position.z);
-        textInfoGo.transform.LookAt(Camera.main.transform);
-        textInfoGo.transform.Rotate(0, -180, 0);
+        
+        //textInfoGo.transform.LookAt(GameObject.Find("VRTKSDK/SteamSDK/Camera(eye)").transform);
+        //textInfoGo.transform.Rotate(0, -180, 0);
     }
 
     private float Interpolate(float f)

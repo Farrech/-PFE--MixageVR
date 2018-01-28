@@ -8,14 +8,42 @@ public class ListernerManager : MonoBehaviour {
     public Transform head;
     public Transform listenerGo;
 
-    private void Update()
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
+        LeftControllerTelepotation.OnTriggerPressAction += ChangeListener;
+        RightControllerManager.OnTouchPadAndTriggerPress += ChangeListenerOrientation;
 
-        }
+    }
+
+    private void OnDisable()
+    {
+        LeftControllerTelepotation.OnTriggerPressAction -= ChangeListener;
+        RightControllerManager.OnTouchPadAndTriggerPress -= ChangeListenerOrientation;
     }
 
 
+    void ChangeListener()
+    {
+        if (ears.transform.parent == listenerGo)
+            ears.transform.parent = head;
+        else
+            ears.transform.parent = listenerGo;
+        ears.transform.localPosition = Vector3.zero;
+        ears.transform.rotation = ears.transform.parent.transform.rotation;
+    }
 
+    void ChangeListenerOrientation(bool dir)
+    {
+        if (ears.transform.parent == listenerGo)
+        {
+            if (dir)
+            {
+                listenerGo.transform.Rotate(0, 1f * Time.deltaTime, 0);
+            }
+            else
+            {
+                listenerGo.transform.Rotate(0, -1f * Time.deltaTime, 0);
+            }
+        }
+    }
 }
