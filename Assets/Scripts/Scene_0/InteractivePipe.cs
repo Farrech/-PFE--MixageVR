@@ -21,7 +21,7 @@ public class InteractivePipe : MonoBehaviour {
     {
         RightControllerManager.OnTouchpadPressAction += MoveTargetAction;
         RightControllerManager.OnTriggerPressAction += SelectTarget;
-        LeftControllerTelepotation.OnTeleportation += UpdateText;
+        LeftControllerManager.OnTeleportation += UpdateText;
         RightControllerManager.OnGripPressAction += SelectTarget2;
 
     }
@@ -31,7 +31,7 @@ public class InteractivePipe : MonoBehaviour {
         RightControllerManager.OnTouchpadPressAction -= MoveTargetAction;
         RightControllerManager.OnTriggerPressAction -= SelectTarget;
         RightControllerManager.OnGripPressAction -= SelectTarget2;
-        LeftControllerTelepotation.OnTeleportation -= UpdateText;
+        LeftControllerManager.OnTeleportation -= UpdateText;
 
     }
 

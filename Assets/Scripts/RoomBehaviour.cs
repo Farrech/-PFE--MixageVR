@@ -7,8 +7,10 @@ public class RoomBehaviour : MonoBehaviour {
     private Transform leftWall;
     private Transform frontWall;
     private Transform backWall;
-    public Transform pipeContainer;
     private ResonanceAudioRoom audioRoom;
+
+    public Transform pipeContainer;
+    public AnimationCurve curve;
 
     public void OnEnable()
     {
@@ -70,5 +72,6 @@ public class RoomBehaviour : MonoBehaviour {
         audioRoom.size.z = frontWall.transform.position.z;
         audioRoom.transform.position = new Vector3(0, 5f, audioRoom.size.z / 2f);
 
+        audioRoom.reverbTime = curve.Evaluate((audioRoom.size.z - 2f) / 98f); // max size of 100
     }
 }

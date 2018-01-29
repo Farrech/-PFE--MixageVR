@@ -1,0 +1,72 @@
+Piste : Bass-Active DI
+    panoramique = 0.07692308
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Bass-Amp-647wav
+    panoramique = 0.1538462
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Floor-M81
+    panoramique = 0.2307692
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-HAT-ELA M 260
+    panoramique = 0.3076923
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Kick In-M82
+    panoramique = 0.3846154
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Kick Out-AK47
+    panoramique = 0.4615385
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Rack-M80
+    panoramique = 0.5384616
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Room-M81
+    panoramique = 0.6153846
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Snare Bottom-M80
+    panoramique = 0.6923077
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : Drums-Snare Top-M81
+    panoramique = 0.7692308
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : ELE Guitar-Champ-M80
+    panoramique = 0.8461539
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+
+Piste : ELE Guitar-Kay-647
+    panoramique = 0.923077
+      volume = 1
+     delay = 0.04408005
+     Reverb = (32.0, 10.0, 16.0) 
+

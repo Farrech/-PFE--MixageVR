@@ -5,7 +5,6 @@ using UnityEngine.Audio;
 
 public class PFEModel : PFEElement {
 
-    public AudioMixer mixer;
     public List<int> listeningSources = new List<int>();
     public List<int> modifyingSources = new List<int>();
     public float maxDuration = 0;

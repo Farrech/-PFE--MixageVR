@@ -42,7 +42,6 @@ public class PFEApplication : MonoBehaviour
             for (int i = 0; i < clips.Length; i++)
             {                
                 model.listeningSources.Add(i);
-                model.modifyingSources.Add(i);
                 var audioGo = Instantiate(audioPrefab, model.transform);
                 source = audioGo.GetComponent<AudioSource>();
                 source.clip = (AudioClip)clips[i];

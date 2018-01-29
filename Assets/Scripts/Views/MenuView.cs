@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class MenuView : PFEElement
     public Transform head;
     public ResonanceAudioRoom rar;
     public bool menuState;
+    public GameObject listenerGo;
+    public Transform bezierSplineContainer;
 
     List<Toggle> toggles = new List<Toggle>();
     float currentTime = 0;
@@ -122,6 +125,22 @@ public class MenuView : PFEElement
             app.model.listeningSources.Add(soundIndex);
     }
 
+    public void Export()
+    {
+        string exp = String.Empty;
+        int i = 0;
+
+        foreach(Transform c in app.model.transform)
+        {
+            var panoramic = bezierSplineContainer.GetChild(i).GetComponent<InteractivePipe>().progress;
+            var volume = c.GetComponent<AudioSource>().volume;
+            var delay = bezierSplineContainer.GetChild(i).GetComponent<InteractivePipe>().currentRadius/340.29f;
+            exp += "Piste : " + c.name + "\n    panoramique = " + panoramic + "\n      volume = " + volume + "\n     delay = " + delay + "\n     Reverb = " + rar.size.ToString() +  " \n\n";
+            i++;
+        }
+        File.WriteAllText("Export.txt", exp);
+    }
+
     public void PlayPause()
     {
         isPlaying = !isPlaying;
@@ -131,7 +150,7 @@ public class MenuView : PFEElement
             foreach (int index in app.model.listeningSources)
             {
                 AudioSource source = app.model.transform.GetChild(index).GetComponent<AudioSource>();
-                source.time = (currentTime <= source.clip.length ? currentTime : source.clip.length);
+                source.time = (currentTime < source.clip.length ? currentTime : source.clip.length - 1);
                 source.Play();
             }
         }
@@ -142,7 +161,13 @@ public class MenuView : PFEElement
             toggle.interactable = !isPlaying;
     }
 
-    public void Reset()
+    public void SetListener()
+    {
+        listenerGo.transform.position = new Vector3(head.transform.position.x, listenerGo.transform.position.y, head.position.z);
+        listenerGo.transform.rotation = head.transform.rotation;
+    }
+
+    public void ResetMix()
     {
         isPlaying = false;
         playPauseText.text = "Play";
@@ -151,7 +176,7 @@ public class MenuView : PFEElement
         foreach (Toggle toggle in toggles)
         {
             toggle.interactable = true;
-            toggle.isOn = true;
+            toggle.isOn = false;
         }
         currentTime = 0;
         mixSlider.value = 0;

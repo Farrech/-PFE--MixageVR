@@ -24,7 +24,7 @@ public class PFEController : PFEElement {
 
     public void OnDistorsionChange(float newDistortionLevel)
     {
-        foreach (int sourceIndex in app.model.modifyingSources) {
+            foreach (int sourceIndex in app.model.modifyingSources) {
             Transform child = app.model.transform.GetChild(sourceIndex);
             if (newDistortionLevel <= 0.01F) {
                 Destroy(child.GetComponent<AudioDistortionFilter>());

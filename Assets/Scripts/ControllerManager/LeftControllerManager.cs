@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LeftControllerTelepotation : MonoBehaviour
+public class LeftControllerManager : MonoBehaviour
 {
 
     private SteamVR_TrackedObject trackedObj;
@@ -49,8 +49,8 @@ public class LeftControllerTelepotation : MonoBehaviour
         laser.SetActive(true);
         laserTransform.position = Vector3.Lerp(trackedObj.transform.position, hitPoint, .5f);
         laserTransform.LookAt(hitPoint);
-                laserTransform.localScale = new Vector3(laserTransform.localScale.x, laserTransform.localScale.y,
-            hit.distance);
+        laserTransform.localScale = new Vector3(laserTransform.localScale.x, laserTransform.localScale.y,
+    hit.distance);
     }
 
     void Awake()
@@ -69,7 +69,7 @@ public class LeftControllerTelepotation : MonoBehaviour
                 this.hitGo = hit.collider.gameObject;
                 hitPoint = hit.point; // Nécessaire?
                 ShowLaser(hit);
-                if (hitGo.tag != "AudioSource" && hitGo.name=="Floor")
+                if (hitGo.tag != "AudioSource" && hitGo.name == "Floor")
                 {
                     reticle.SetActive(true);
                     teleportReticleTransform.position = hitPoint + teleportReticleOffset;
@@ -82,7 +82,7 @@ public class LeftControllerTelepotation : MonoBehaviour
                 }
             }
         }
-        else 
+        else
         {
             laser.SetActive(false);
             reticle.SetActive(false);
@@ -121,7 +121,7 @@ public class LeftControllerTelepotation : MonoBehaviour
         Vector3 difference = cameraRigTransform.position - headTransform.position;
         difference.y = 0;
         cameraRigTransform.position = hitPoint + difference;
-        if(up)
+        if (up)
             cameraRigTransform.position = new Vector3(cameraRigTransform.position.x, cameraRigTransform.position.y + 5, cameraRigTransform.position.z);
         OnTeleportation();
     }
