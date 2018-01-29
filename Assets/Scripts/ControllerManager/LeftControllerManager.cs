@@ -67,9 +67,9 @@ public class LeftControllerManager : MonoBehaviour
             if (Physics.Raycast(trackedObj.transform.position, transform.forward, out hit, 100, teleportMask))
             {
                 this.hitGo = hit.collider.gameObject;
-                hitPoint = hit.point; // Nécessaire?
+                hitPoint = hit.point; 
                 ShowLaser(hit);
-                if (hitGo.tag != "AudioSource" && hitGo.name == "Floor")
+                if (hitGo.name == "Floor") // Si le laser touche le sol, on fait apparaitre une cible, l'utilisateur peut se téléporter
                 {
                     reticle.SetActive(true);
                     teleportReticleTransform.position = hitPoint + teleportReticleOffset;
@@ -88,7 +88,7 @@ public class LeftControllerManager : MonoBehaviour
             reticle.SetActive(false);
         }
 
-        if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad) && shouldTeleport)
+        if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad) && shouldTeleport) // Au relâchement du touchpad, il y a téléportation
         {
             Teleport();
         }
@@ -96,7 +96,7 @@ public class LeftControllerManager : MonoBehaviour
         {
             OnTriggerPressAction();
         }
-        if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
+        if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Grip)) // Offset d'hauteur : l'utilisateur peut être placé 5 mètres au dessus de la scène
         {
             up = !up;
             if (up)

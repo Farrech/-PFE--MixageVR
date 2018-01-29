@@ -36,19 +36,18 @@ public class LaserPointer : MonoBehaviour {
 
     void Update()
     {
-        // controller is targetting an object through the laser
-        if (Controller.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && ! Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+        if (Controller.GetTouch(SteamVR_Controller.ButtonMask.Touchpad) && ! Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad)) // Si le touchPad est appuyé mais pas préssé
         {
-            if (Physics.Raycast(trackedObj.transform.position, transform.forward, out hit, 100, teleportMask))
+            if (Physics.Raycast(trackedObj.transform.position, transform.forward, out hit, 100, teleportMask)) // si une collision est détectée
             {
-                this.hitGo = hit.collider.gameObject;
+                this.hitGo = hit.collider.gameObject; // on garde l'objet en mémoire
                 if (!this.transform.GetComponent<FixedJoint>())
                     ShowLaser(hit);
                 else
                     ResetLaser();
             }
         }
-        else // Hide the laser when the player released the touchpad.
+        else 
         {
             ResetLaser();
         }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class RightControllerManager : MonoBehaviour
 {
 
+    // Création d'évènement 
     public delegate void TouchpadPressAction(GameObject hit, Vector3 dir);
     public static event TouchpadPressAction OnTouchpadPressAction;
 
@@ -24,9 +25,11 @@ public class RightControllerManager : MonoBehaviour
     private MenuView menuView;
 
 
-    private GameObject lastHitGo;
+    private GameObject lastHitGo; // Garde en mémoire le dernier objet selectionné à l'aide du laser
+
     public Transform bezierSplinesContainer;
-    bool showAll;
+    bool showAll; // si vrai, toutes les courbes de bézier sont visibles
+
     private SteamVR_TrackedObject trackedObj;
     private SteamVR_Controller.Device Controller
     {
@@ -41,28 +44,28 @@ public class RightControllerManager : MonoBehaviour
 
     private void Update()
     {
-        if (!menuView.menuState)
-            if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
+        if (!menuView.menuState) // Si le menu est désactivé 
+            if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))  // Appui du trigger = selection d'une source / listener
             {
                 var hitGo = this.GetComponentInParent<LaserPointer>().hitGo;
-                if (hitGo && hitGo.tag == "AudioSource")
+                if (hitGo && hitGo.tag == "AudioSource")  // si l'objet visée est un AudioSource
                 {
 
-                    if (lastHitGo == null)
+                    if (lastHitGo == null) // s'il n'y a pas d'objet précédent en mémoire, on stock le nouvel objet visé
                     {
                         lastHitGo = hitGo;
                         lastHitGo.GetComponent<Renderer>().material.color = Color.gray;
-                        if (!showAll)
-                            OnTriggerPressAction(lastHitGo);
+                        if (!showAll) 
+                            OnTriggerPressAction(lastHitGo); // Lance l'event OnTriggerPressAction : mise en évidence de la courbe de bézier
                     }
-                    else if (lastHitGo != null && lastHitGo.tag != "AudioListener" && hitGo.GetComponent<AudioSourceSript>().index == lastHitGo.GetComponent<AudioSourceSript>().index)
+                    else if (lastHitGo != null && lastHitGo.tag != "AudioListener" && hitGo.GetComponent<AudioSourceSript>().index == lastHitGo.GetComponent<AudioSourceSript>().index) // si une même source sonore est visée, c'est une déselection
                     {
                         lastHitGo.GetComponent<Renderer>().material.color = Color.white;
                         if (!showAll)
                             OnTriggerPressAction(lastHitGo);
                         lastHitGo = null;
                     }
-                    else if (lastHitGo != null && lastHitGo.tag != "AudioListener" && hitGo.GetComponent<AudioSourceSript>().index != lastHitGo.GetComponent<AudioSourceSript>().index)
+                    else if (lastHitGo != null && lastHitGo.tag != "AudioListener" && hitGo.GetComponent<AudioSourceSript>().index != lastHitGo.GetComponent<AudioSourceSript>().index) // si une autre source sonore est visée, c'est une nouvelle sélection
                     {
                         lastHitGo.GetComponent<Renderer>().material.color = Color.white;
                         if (!showAll)
@@ -72,7 +75,7 @@ public class RightControllerManager : MonoBehaviour
                         if (!showAll)
                             OnTriggerPressAction(lastHitGo);
                     }
-                    else if (lastHitGo != null && lastHitGo.tag == "AudioListener")
+                    else if (lastHitGo != null && lastHitGo.tag == "AudioListener") // Si un point d'écoute est sélectionné, nouvelle sélection
                     {
                         lastHitGo.GetComponent<Renderer>().material.color = Color.white;
                         lastHitGo = hitGo;
@@ -81,12 +84,12 @@ public class RightControllerManager : MonoBehaviour
                             OnTriggerPressAction(lastHitGo);
                     }
                 }
-                else if (hitGo && hitGo.tag == "AudioListener" && lastHitGo == null)
+                else if (hitGo && hitGo.tag == "AudioListener" && lastHitGo == null) // Sélection d'un point d'écoute
                 {
                     lastHitGo = hitGo;
                     lastHitGo.GetComponent<Renderer>().material.color = Color.green;
                 }
-                else if (hitGo && hitGo.tag == "AudioListener" && lastHitGo.tag == "AudioSource")
+                else if (hitGo && hitGo.tag == "AudioListener" && lastHitGo.tag == "AudioSource") // nouvelle sélection d'une audioSource
                 {
                     lastHitGo.GetComponent<Renderer>().material.color = Color.white;
                     if (!showAll)
@@ -94,15 +97,15 @@ public class RightControllerManager : MonoBehaviour
                     lastHitGo = hitGo;
                     lastHitGo.GetComponent<Renderer>().material.color = Color.green;
                 }
-                else if (hitGo && hitGo.tag == "AudioListener" && hitGo == lastHitGo)
+                else if (hitGo && hitGo.tag == "AudioListener" && hitGo == lastHitGo) // Déselection d'un point d'écoute
                 {
                     lastHitGo.GetComponent<Renderer>().material.color = Color.white;
                     lastHitGo = null;
                 }
             }
-            else if (Controller.GetPress(SteamVR_Controller.ButtonMask.Trigger))
+            else if (Controller.GetPress(SteamVR_Controller.ButtonMask.Trigger)) // Si le Trigger reste appuyé, et qu'un point d'écoute est séléctionné, l'appui du touchpad entrâine une rotation
             {
-                if (lastHitGo && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad) && lastHitGo.tag == "AudioListener")
+                if (lastHitGo && Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad) && lastHitGo.tag == "AudioListener") 
                 {
                     Debug.Log("Rotation");
                     var touchpad = (Controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
@@ -117,7 +120,7 @@ public class RightControllerManager : MonoBehaviour
                     Debug.Log("touchpad x " + touchpad.x);
                 }
             }
-            else if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad))
+            else if (Controller.GetPress(SteamVR_Controller.ButtonMask.Touchpad)) // A l'appui du touchpad, s'il n'ya aucun objet sélectionné, les murs sont déplacés 
             {
                 if (lastHitGo  && lastHitGo.tag != "Untagged" && OnTouchpadPressAction != null)
                 {
@@ -151,7 +154,7 @@ public class RightControllerManager : MonoBehaviour
                     {
                         if (touchpad.y > 0.7f)
                         {
-                            OnTouchpadPressAction2(true);
+                            OnTouchpadPressAction2(true); // déplacement des murs
                         }
                         else if (touchpad.y < -0.7f)
                         {
@@ -161,16 +164,16 @@ public class RightControllerManager : MonoBehaviour
                 }
 
             }
-            else if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+            else if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.Grip)) // A l'appui du grip, si une audioSource est séléctionnée, (dés)activation de la manette
             {
-                if (lastHitGo && OnGripPressAction != null)
+                if (lastHitGo && OnGripPressAction != null && lastHitGo.tag== "AudioSource")
                 {
                     lastHitGo.GetComponent<AudioSourceSript>().anchored = !lastHitGo.GetComponent<AudioSourceSript>().anchored;
                     if (!showAll)
                         OnGripPressAction(lastHitGo);
                 }
             }
-            else if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+            else if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))// A l'appui du bouton menu, toutes les courbes de béziers sont montrées ou cachées
             {
                 showAll = !showAll;
                 foreach (Transform t in bezierSplinesContainer)
@@ -184,7 +187,7 @@ public class RightControllerManager : MonoBehaviour
             }
     }
 
-    public void OnTriggerStay(Collider other)
+    public void OnTriggerStay(Collider other) // Lorsque la manette rencontre une audioSource, l'appui sur le touchpad permet de monter ou descendre le volume
     {
         if (other.CompareTag("AudioSource"))
         {
