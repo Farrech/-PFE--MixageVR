@@ -33,10 +33,10 @@ public class RoomBehaviour : MonoBehaviour {
         InitialiseRoom();
     }
 
-    public void InitialiseRoom()
+    public void InitialiseRoom() // Initialisation
     {
         float limit = 2;
-        foreach (Transform t in pipeContainer)
+        foreach (Transform t in pipeContainer) // Calcul du rayon maximal, correspondant à la limite des murs
         {
             limit = t.GetComponent<Pipe>().curveRadius + 1 > limit ? t.GetComponent<Pipe>().curveRadius + 1 : limit;
         }
@@ -48,15 +48,15 @@ public class RoomBehaviour : MonoBehaviour {
         audioRoom.transform.position = new Vector3(0, 5f, audioRoom.size.z / 2f);
     }
 
-    void MoveWall(bool up)
+    void MoveWall(bool up) // Movement d'extension ou rapprochement des murs
     {
         float limit = 2;
-        foreach(Transform t in pipeContainer)
+        foreach(Transform t in pipeContainer)// Calcul du rayon maximal, correspondant à la limite des murs
         {
             limit = t.GetComponent<Pipe>().curveRadius+1 > limit ? t.GetComponent<Pipe>().curveRadius+1 : limit;
         }
 
-        if (up && frontWall.position.z<500)
+        if (up && frontWall.position.z<100)
         {
             rightWall.position += Vector3.right / 10;
             leftWall.position += Vector3.left / 10;

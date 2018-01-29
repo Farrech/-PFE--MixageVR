@@ -22,13 +22,19 @@ public class PFEController : PFEElement {
         app.view.menu.SwitchMenuState();
     }
 
+    // Each time the Distorsion view has changed
     public void OnDistorsionChange(float newDistortionLevel)
     {
-            foreach (int sourceIndex in app.model.modifyingSources) {
+        foreach (int sourceIndex in app.model.modifyingSources) //pour toutes les sources concernées par la modification
+        {
             Transform child = app.model.transform.GetChild(sourceIndex);
-            if (newDistortionLevel <= 0.01F) {
+            // soit la nouvelle valeur est faible, et le component est supprimé, soit il est instantié, soit il est mis à jour
+            if (newDistortionLevel <= 0.01F)
+            {
                 Destroy(child.GetComponent<AudioDistortionFilter>());
-            } else {
+            }
+            else
+            {
                 AudioDistortionFilter distorsionFilter = child.GetComponent<AudioDistortionFilter>();
                 if (!distorsionFilter)
                     distorsionFilter = child.gameObject.AddComponent<AudioDistortionFilter>();
@@ -37,6 +43,7 @@ public class PFEController : PFEElement {
         }
     }
 
+    // Each time the Echo view has changed
     public void OnEchoChange(float delay, float decay)
     {
         foreach (int sourceIndex in app.model.modifyingSources)

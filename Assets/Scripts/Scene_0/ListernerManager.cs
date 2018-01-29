@@ -53,7 +53,7 @@ public class ListernerManager : MonoBehaviour {
         ears.transform.rotation = ears.transform.parent.transform.rotation;
     }
 
-    void ChangeListenerOrientation(bool dir)
+    void ChangeListenerOrientation(bool dir) // Rotation lors de l'appui du touchpad, pour orienter l'audition
     {
         if (ears.transform.parent == listenerGo)
         {

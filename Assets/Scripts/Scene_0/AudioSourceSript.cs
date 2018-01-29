@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class AudioSourceSript : MonoBehaviour {
 
-    public bool anchored = true;
-    public int index;
+    public bool anchored = true; // la source est-elle ancrée  ?
+    public int index; // index de la source
 }

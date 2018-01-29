@@ -20,7 +20,6 @@ public class PFEApplication : MonoBehaviour
     public PFEController controller;
 
     public List<GameObject> audioSourcesL;
-    public List<InteractiveBezier> bezierSplineL;
 
     public bool loadFromResources = false;
     public GameObject audioPrefab;
@@ -46,23 +45,22 @@ public class PFEApplication : MonoBehaviour
                 source = audioGo.GetComponent<AudioSource>();
                 source.clip = (AudioClip)clips[i];
                 source.name = source.clip.name;
-                if (source.clip.length > model.maxDuration)
+                if (source.clip.length > model.maxDuration) // Recherche de la durée maximale des morceaux
                     model.maxDuration = source.clip.length;
                 audioGo.GetComponent<AudioSourceSript>().index = i;
                 var textInfo = Instantiate(textInfoPrefab, canvasInfo);
-                textInfo.GetComponentInChildren<Text>().text = clips[i].name;
+                textInfo.GetComponentInChildren<Text>().text = clips[i].name; // Ajout d'un texte à l'audioSource
                 var pipeGo = Instantiate(pipePrefab, pipesContainer);
                 var bezierGo = Instantiate(bezierSplinePrefab, bezierSplinescontainer);
                 var interactivePipe = bezierGo.GetComponent<InteractivePipe>();
-                interactivePipe.audioGo = audioGo;
+                interactivePipe.audioSource = audioGo;
                 interactivePipe.frontWall = frontWall;
                 interactivePipe.textInfoGo = textInfo;
-                interactivePipe.currentRadius = 15; // En dur à changer
+                interactivePipe.currentRadius = 15;
                 interactivePipe.pipe = pipeGo.GetComponent<Pipe>();
                 interactivePipe.progress = progress * (i + 1);
                 interactivePipe.UpdateCurve(true);
                 audioSourcesL.Add(audioGo);
-                bezierSplineL.Add(bezierGo.GetComponent<InteractiveBezier>());
             }
         }
         view.menu.DisplayTextures();

@@ -180,7 +180,7 @@ public class RightControllerManager : MonoBehaviour
                 {
                     t.GetComponent<InteractivePipe>().visible = showAll ? true : false;
 
-                    if (this.lastHitGo != null  && this.lastHitGo.GetComponent<AudioSourceSript>() && this.lastHitGo.GetComponent<AudioSourceSript>().index == t.GetComponent<InteractivePipe>().audioGo.GetComponent<AudioSourceSript>().index && lastHitGo.GetComponent<AudioSourceSript>().anchored)
+                    if (this.lastHitGo != null  && this.lastHitGo.GetComponent<AudioSourceSript>() && this.lastHitGo.GetComponent<AudioSourceSript>().index == t.GetComponent<InteractivePipe>().audioSource.GetComponent<AudioSourceSript>().index && lastHitGo.GetComponent<AudioSourceSript>().anchored)
                         t.GetComponent<InteractivePipe>().visible = true;
                     t.GetComponent<InteractivePipe>().UpdateCurve(false);
                 }

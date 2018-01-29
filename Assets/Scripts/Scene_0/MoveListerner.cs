@@ -17,7 +17,7 @@ public class MoveListerner : MonoBehaviour {
     }
 
 
-    void Move (GameObject hitGo, Vector3 direction) {
+    void Move (GameObject hitGo, Vector3 direction) { // Déplacement du listener
         if (hitGo && hitGo.tag == "AudioListener") 
         {
             if (direction == Vector3.up && this.transform.position.z < frontWall.transform.position.z - 0.5f)

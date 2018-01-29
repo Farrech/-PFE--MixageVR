@@ -16,7 +16,7 @@ public class EchoView : PFEElement {
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, minValue, maxValue);
         Wall.localPosition = clampedPosition;
 
-        float clampedValue = curve.Evaluate((clampedPosition.x - maxValue) / (minValue - maxValue));
+        float clampedValue = curve.Evaluate((clampedPosition.x - maxValue) / (minValue - maxValue));  // on se sert d'une courbe personnalisée pour relier la valeur apparente et la valeur réelle
         ParticleSystem.MainModule module = particle.main;
         module.maxParticles = (int)(clampedValue * 1000); // between 0 and 1000 particles
         float delay = clampedValue * 5000; // between 0 and 5000 ms

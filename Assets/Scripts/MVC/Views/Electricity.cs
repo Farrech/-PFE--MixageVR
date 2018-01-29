@@ -58,6 +58,7 @@ public class Electricity : MonoBehaviour
         points[3] = GetMiddleWithRandomness(center, End.position);
     }
 
+    // pour créer les arcs éléctriques, il faut introduire de l'aléatoire pour chaque section de l'éclair
     private Vector3 GetMiddleWithRandomness(Vector3 point1, Vector3 point2)
     {
         float x = (point1.x + point2.x) / 2;

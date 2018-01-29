@@ -16,7 +16,7 @@ public class DistorsionView : PFEElement {
         clampedPosition.z = Mathf.Clamp(clampedPosition.z, minLocalZ, maxLocalZ);
         movingCylinder.localPosition = clampedPosition;
 
-        electricity.intensity = curve.Evaluate((clampedPosition.z - minLocalZ) / (maxLocalZ - minLocalZ));
+        electricity.intensity = curve.Evaluate((clampedPosition.z - minLocalZ) / (maxLocalZ - minLocalZ)); // on se sert d'une courbe personnalisée pour relier la valeur apparente et la valeur réelle
 
         app.controller.OnDistorsionChange(electricity.intensity);
     }

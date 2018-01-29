@@ -27,6 +27,7 @@ public class MenuView : PFEElement
     
     void Update()
     {
+        // mise à jour du curseur de temps
         if (currentTime < app.model.maxDuration && isPlaying)
         {
             currentTime += Time.deltaTime;
@@ -41,6 +42,7 @@ public class MenuView : PFEElement
         gameObject.SetActive(menuState);
         if(menuState)
         {
+            // chaque fois que le menu est ouvert, il est placé en avant de l'utilisateur et reste fixe
             transform.position = head.position + head.forward * 5;
             if (transform.position.y < 2)
                 transform.position = new Vector3(transform.position.x, 2, transform.position.z);
@@ -55,6 +57,7 @@ public class MenuView : PFEElement
         int i = 0;
         foreach (Transform child in app.model.transform)
         {
+            // Afficher les titres des pistes ainsi que les cases à cocher "écouter" et "modifier"
             newPanel = Instantiate(soundPanelPrefab, soundPanel);
             newPanel.GetComponentInChildren<Text>().text = child.name;
             Toggle[] newToggles = newPanel.GetComponentsInChildren<Toggle>();
@@ -63,6 +66,7 @@ public class MenuView : PFEElement
             newToggles[1].onValueChanged.AddListener(delegate { OnListenChange(tempI); });
             toggles.AddRange(newToggles);
 
+            // Afficher la longueur des pistes dans la partie de droite, où se trouve le slider
             newPanel = Instantiate(mixPanelPrefab, mixPanel);
             newPanel.GetComponent<LayoutElement>().preferredWidth = app.model.maxDuration;
             float duration = child.GetComponent<AudioSource>().clip.length;
@@ -79,6 +83,7 @@ public class MenuView : PFEElement
 
         foreach (Sprite sprite in sprites)
         {
+            // Afficher les boutons permettant de changer les texture des murs
             newPanel = Instantiate(textureButtonPrefab, texturePanel);
             newPanel.name = sprite.name;
             newPanel.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
@@ -91,6 +96,7 @@ public class MenuView : PFEElement
 
     public void OnTextureButtonClick(string textureName)
     {
+        // Chaque bouton cesse d'être interactable lorsqu'il est cliqué, puisqu'il représente déjà la surface utilisée
         foreach(Transform child in texturePanel)
         {
             Button button = child.GetComponent<Button>();
@@ -125,7 +131,7 @@ public class MenuView : PFEElement
             app.model.listeningSources.Add(soundIndex);
     }
 
-    public void Export()
+    public void Export() // permet d'exporter les paramètres de chaque pistes vers un fichier texte
     {
         string exp = String.Empty;
         int i = 0;
@@ -150,7 +156,7 @@ public class MenuView : PFEElement
             foreach (int index in app.model.listeningSources)
             {
                 AudioSource source = app.model.transform.GetChild(index).GetComponent<AudioSource>();
-                source.time = (currentTime < source.clip.length ? currentTime : source.clip.length - 1);
+                source.time = (currentTime < source.clip.length ? currentTime : source.clip.length - 1); // on déplace le début de la lecture en fonction du slider
                 source.Play();
             }
         }
@@ -161,7 +167,7 @@ public class MenuView : PFEElement
             toggle.interactable = !isPlaying;
     }
 
-    public void SetListener()
+    public void SetListener() // place l'objet lisener à la position et à la même rotation que la position de l'utilisateur
     {
         listenerGo.transform.position = new Vector3(head.transform.position.x, listenerGo.transform.position.y, head.position.z);
         listenerGo.transform.rotation = head.transform.rotation;
